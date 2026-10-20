@@ -27,6 +27,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -152,17 +153,9 @@ fun getSoilData(
             Text(text = "Get Crop Recommendation")
         }
 
-        val pH = if (pHText.isNotEmpty()) {
-            pHText.toFloat()
-        } else {
-            null
-        }
-        val waterAvailability = if (waterAvailabilityText.isNotEmpty()) {
-            waterAvailabilityText.toFloat()
-        } else {
-            null
-        }
-        val season = when (selectedSeason) {
+        val pH = pHText.toFloatOrNull()
+        val waterAvailability = waterAvailabilityText.toFloatOrNull()
+        val season = when (selectedSeason.lowercase()) {
             "rainy" -> 0
             "spring" -> 1
             "summer" -> 2
@@ -185,6 +178,8 @@ fun getSoilData(
         if(suggestionButtonClicked){
             if (cropData != null) {
                 get_crop_suggestion(cropData = cropData, cropViewModel = cropViewModel)
+            } else {
+                Text("Enter valid pH and water values, and select a season.", color = MaterialTheme.colorScheme.error)
             }
         }
     }

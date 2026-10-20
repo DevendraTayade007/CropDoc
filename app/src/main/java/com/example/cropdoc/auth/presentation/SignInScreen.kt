@@ -52,6 +52,7 @@ fun LoginScreen(
     val keyboard = LocalSoftwareKeyboardController.current
     var email by remember { mutableStateOf("") }
     var signInError by remember { mutableStateOf(false  ) }
+    var signInErrorMessage by remember { mutableStateOf("Invalid email or password.") }
     var password by remember {
         mutableStateOf("")
     }
@@ -65,6 +66,11 @@ fun LoginScreen(
         }
         is Result.Error -> {
             signInError = true
+            signInErrorMessage = when (val exception = (result as Result.Error).exception) {
+                is com.google.firebase.auth.FirebaseAuthInvalidUserException,
+                is com.google.firebase.auth.FirebaseAuthInvalidCredentialsException -> "Invalid email or password."
+                else -> exception.localizedMessage ?: "Sign-in failed. Please try again."
+            }
         }
         else -> {
 
@@ -155,7 +161,7 @@ fun LoginScreen(
                     )
                 )
                 if (signInError) {
-                    Text("Invalid Email or Password", color = Color.Red)
+                    Text(signInErrorMessage, color = Color.Red)
                 }
                 Button(
                     onClick = {

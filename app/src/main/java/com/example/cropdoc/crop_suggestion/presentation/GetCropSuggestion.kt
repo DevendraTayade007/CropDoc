@@ -37,7 +37,7 @@ fun get_crop_suggestion(
     cropData: CropData,
     cropViewModel: CropSuggestionViewModel
 ) {
-    LaunchedEffect(key1 = null) {
+    LaunchedEffect(cropData) {
         cropViewModel.predictCrop(cropData)
     }
     val cropSuggestionState  = cropViewModel.suggestionState.value

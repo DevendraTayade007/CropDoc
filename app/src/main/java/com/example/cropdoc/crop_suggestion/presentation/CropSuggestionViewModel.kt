@@ -25,11 +25,13 @@ class CropSuggestionViewModel @Inject constructor(
 
     suspend fun predictCrop(data: CropData?) {
         viewModelScope.launch {
+            _suggestionState.value = SuggestionState(loading = true)
             try {
                 val response = data?.let { repository.get().getCropSuggestion(it) }
+                    ?: throw IllegalArgumentException("Crop inputs are incomplete")
                 _suggestionState.value = _suggestionState.value.copy(
                     loading = false,
-                    suggestion = response?.prediction,
+                    suggestion = response.prediction,
                     error = null
                 )
             }
@@ -48,5 +50,3 @@ class CropSuggestionViewModel @Inject constructor(
         val error: String? = null
     )
 }
-
-

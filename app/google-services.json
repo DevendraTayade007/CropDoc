@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "816503190812",
-    "project_id": "cropdoc-b7a48",
-    "storage_bucket": "cropdoc-b7a48.appspot.com"
+    "project_number": "169505516542",
+    "project_id": "cropdoc-c0f65",
+    "storage_bucket": "cropdoc-c0f65.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:816503190812:android:ada51e338c7c7e57ed76d9",
+        "mobilesdk_app_id": "1:169505516542:android:bb35b95644d129d566eeaf",
         "android_client_info": {
           "package_name": "com.example.cropdoc"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDkUdPLE4mdueedmRWVX0xuoSpY33b20ho"
+          "current_key": "AIzaSyDDS-3H-B78hBqgkYuXCOTru_lsuXloJLk"
         }
       ],
       "services": {

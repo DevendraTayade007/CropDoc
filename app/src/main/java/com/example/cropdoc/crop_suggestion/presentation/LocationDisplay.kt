@@ -58,9 +58,9 @@ fun LocationDisplay(
         contract = ActivityResultContracts.RequestMultiplePermissions(),
         onResult = { permissions ->
             if (permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
-                && permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true
+                || permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true
             ) {
-                locationUtils.requestLocationUpdates(viewModel = locationViewModel)
+                locationUtils.requestCurrentLocation { it?.let(locationViewModel::updateLocation) }
             } else {
                 val rationaleRequired = ActivityCompat.shouldShowRequestPermissionRationale(
                     context as MainActivity,
@@ -93,8 +93,8 @@ fun LocationDisplay(
     )
     {
         item {
-            if (locationUtils.hasLocationPermission(context)) {
-                locationUtils.requestLocationUpdates(locationViewModel)
+            if (location == null && locationUtils.hasLocationPermission(context)) {
+                locationUtils.requestCurrentLocation { it?.let(locationViewModel::updateLocation) }
             }
             if (location != null) {
                 Row {
@@ -109,7 +109,9 @@ fun LocationDisplay(
                         )
                     )
                 }
-                weatherViewModel.fetchWeather(lat = location.latitude, lon = location.longitude)
+                LaunchedEffect(location.latitude, location.longitude) {
+                    weatherViewModel.fetchWeather(lat = location.latitude, lon = location.longitude)
+                }
                 Box(modifier = Modifier.fillMaxSize()) {
                     val weatherState = weatherViewModel.weatherState.value
                     when {

@@ -30,27 +30,29 @@ class LocationUtils(val context : Context) {
             = LocationServices.getFusedLocationProviderClient(context)
 
     @SuppressLint("MissingPermission")
-    fun requestLocationUpdates(viewModel: LocationViewModel){
-
-        val locationCallback = object : LocationCallback(){
-            override fun onLocationResult(locationResult: LocationResult) {
-                super.onLocationResult(locationResult)
-                locationResult.lastLocation?.let {
-                    val location = LocationData(latitude = it.latitude, longitude = it.longitude)
-                    viewModel.updateLocation(location)
+    fun requestCurrentLocation(onLocation: (LocationData?) -> Unit) {
+        _fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+            if (location != null) {
+                onLocation(LocationData(location.latitude, location.longitude))
+            } else {
+                val request = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000)
+                    .setMaxUpdates(1).build()
+                val callback = object : LocationCallback() {
+                    override fun onLocationResult(result: LocationResult) {
+                        _fusedLocationClient.removeLocationUpdates(this)
+                        onLocation(result.lastLocation?.let { LocationData(it.latitude, it.longitude) })
+                    }
                 }
+                _fusedLocationClient.requestLocationUpdates(request, callback, Looper.getMainLooper())
             }
         }
-
-        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 1000).build()
-        _fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
     }
 
     fun hasLocationPermission(context : Context):Boolean{
 
         return ContextCompat.checkSelfPermission(context,
             Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                &&
+                ||
                 ContextCompat.checkSelfPermission(context,
                     Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
     }
